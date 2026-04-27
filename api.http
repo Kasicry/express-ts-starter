@@ -1,0 +1,27 @@
+@baseUrl = http://localhost:8080/api/v1
+
+### 헬스 체크
+GET {{baseUrl}}/health
+
+### 회원가입
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "muja12@example.com",
+  "password": "muja1234",
+  "name": "무자12"
+}
+
+### 로그인
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "muja12@example.com",
+  "password": "muja1234"
+}
+
+### 내 정보 조회 (토큰 필요 - 위 요청의 token 값을 여기 복사)
+GET {{baseUrl}}/users/me
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
