@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npx prisma *)",
+      "Bash(npm run *)",
+      "Bash(docker-compose up *)",
+      "Bash(docker-compose down *)",
+      "Bash(docker-compose *)",
+      "Bash(set DATABASE_URL=postgresql://user:password@localhost:5432/mydb)",
+      "Bash(curl -s http://localhost:8080/api/v1/health)",
+      "Bash(python -m json.tool)",
+      "Bash(curl *)",
+      "Bash(code --install-extension humao.rest-client)",
+      "Bash(bash .claude/scripts/deploy-check.sh)",
+      "Bash(git add *)"
+    ]
+  },
+  "hooks": {
+    "UserPromptExpansion": [
+      {
+        "matcher": "deploy-check",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/scripts/deploy-check.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
