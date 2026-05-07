@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "postgres-readonly": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/.claude/scripts/mcp-postgres-server.js"
+      ],
+      "envFile": "${workspaceFolder}/.env"
+    }
+  }
+}

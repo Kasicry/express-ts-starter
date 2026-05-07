@@ -40,3 +40,9 @@ git config core.hooksPath .githooks
 ```
 
 훅은 `.env` 파일, `JWT_SECRET`, `SECRET_KEY`, `API_KEY`, `DATABASE_URL` 형태의 값, private key 헤더를 감지하면 커밋을 중단합니다. `.env.example`은 예외로 허용됩니다.
+
+## Cursor MCP
+
+프로젝트별 Cursor MCP 설정은 `.cursor/mcp.json`에 있습니다. `postgres-readonly` 서버는 `.env`의 `DATABASE_URL`을 사용해 PostgreSQL 상태와 `public` 스키마 정보를 읽기 전용으로 조회합니다.
+
+Cursor에서 프로젝트를 다시 열거나 MCP 설정을 새로고침한 뒤 `db_health`, `list_tables`, `describe_table` 도구로 연결을 확인하세요. 로컬 DB가 꺼져 있으면 `db_health`는 연결 실패를 반환합니다.
