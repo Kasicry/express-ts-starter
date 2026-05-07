@@ -1,0 +1,50 @@
+#!/bin/sh
+
+# 커밋 전에 staged 파일에 민감 정보가 포함됐는지 확인합니다.
+
+set -u
+
+FAILED=0
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
+
+if [ -z "$STAGED_FILES" ]; then
+  exit 0
+fi
+
+echo "pre-commit: 민감 정보 검사 중..."
+
+for FILE in $STAGED_FILES; do
+  case "$FILE" in
+    .env|.env.*|*/.env|*/.env.*)
+      case "$FILE" in
+        .env.example|*/.env.example)
+          ;;
+        *)
+          echo "오류: 환경 파일은 커밋할 수 없습니다: $FILE"
+          FAILED=1
+          ;;
+      esac
+      ;;
+  esac
+
+  CONTENT=$(git show ":$FILE" 2>/dev/null | tr -d '\000' || true)
+
+  if printf '%s\n' "$CONTENT" | grep -Eiq '(JWT_SECRET|SECRET_KEY|API_KEY|DATABASE_URL)[[:space:]]*=[[:space:]]*[^[:space:]]+'; then
+    echo "오류: 민감 정보로 보이는 값이 staged 파일에 있습니다: $FILE"
+    FAILED=1
+  fi
+
+  if printf '%s\n' "$CONTENT" | grep -Eiq -- '-----BEGIN (RSA |EC |OPENSSH |)PRIVATE KEY-----'; then
+    echo "오류: private key로 보이는 값이 staged 파일에 있습니다: $FILE"
+    FAILED=1
+  fi
+done
+
+if [ "$FAILED" -ne 0 ]; then
+  echo "커밋이 중단되었습니다. 민감 정보를 제거한 뒤 다시 시도하세요."
+  exit 1
+fi
+
+echo "pre-commit: 민감 정보 검사 통과"
+exit 0
